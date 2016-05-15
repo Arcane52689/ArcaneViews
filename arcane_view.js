@@ -13,33 +13,51 @@ ArcaneView.parentOf = function(child) {
 
 ArcaneView.prototype.initialize = function(config) {
   this.$el = this.$el || config.$el;
+  this.params = config.params;
   this.template = this.template || config.template;
-  if (config.templateUrl) {
-    // this.fetchTemplate(config.templateUrl); - not implemented
+  if (config.templateUrl || this.templateUrl) {
+    this._getTemplate(config.templateUrl || this.templateUrl);
   }
   this._listeningFor = {};
+}
+
+ArcaneView.prototype._getTemplate = function(url) {
+  if (Templates.has(url)) {
+    this._assignTemplate(Templates.get(url));
+  } else {
+    Templates.fetch(url, this._assignTemplate.bind(this));
+  }
+}
+
+ArcaneView.prototype._assignTemplate = function(template) {
+  this.template = template;
+  this._render();
 }
 
 
 ArcaneView.prototype._render = function() {
   this.render && this.render();
-  this.$el.html(this.template(this._context()));
+  if (typeof this.template === 'function'){
+    this.$el.html(this.template(this._context()));
+  }
 }
 
 ArcaneView.prototype._context = function() {
   if (this.context) {
     return this.context();
   } else {
-    return {};
+    return {person: "thomas"};
   }
 }
 
 ArcaneView.prototype.on = function(event, target, callback) {
   this.$el.on(event, target, callback);
+  this._listeningFor[event] = true;
 }
 
 ArcaneView.prototype.one = function(event, target, callback) {
   this.$el.one(event, target, callback);
+  this._listeningFor[event] = true;
 }
 
 ArcaneView.prototype.addEvents = function(obj) {

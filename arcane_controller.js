@@ -12,13 +12,18 @@ ArcaneController.parentOf = function(child) {
 
 
 ArcaneController.prototype._initialize = function(config) {
-  this.view = config.view();
   this.model = config.model || undefined;
   this.collection = config.collection || undefined;
 
   this.initialize && this.initialize(config);
 }
 
+ArcaneController._assignView = function(view) {
+  this.view = view;
+}
+
+
+ArcaneContorller.prototype.
 
 
 
