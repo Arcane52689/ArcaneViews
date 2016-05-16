@@ -1,3 +1,7 @@
+MyCont = function(config) {
+  
+}
+
 
 MyView = function(config) {
   // this.template = function() { return '<h1> HELLO WORLD </h1><button class="clickme">CLICK ME</button>' };
