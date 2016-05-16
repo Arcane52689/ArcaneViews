@@ -1,5 +1,3 @@
-
-
 ArcaneView = function(config) {
 
   this.initialize(config);
@@ -15,6 +13,16 @@ ArcaneView.prototype.initialize = function(config) {
   this.$el = this.$el || config.$el;
   this.params = config.params;
   this.template = this.template || config.template;
+  if (this.controller || config.controller) {
+    c = this.controller || config.controller
+    if (typeof c === "function") {
+      this.controller = new c(config);
+      this.controller._assignView(this);
+    } else {
+      this.controller = this.controller || config.controller;
+    }
+  }
+
   if (config.templateUrl || this.templateUrl) {
     this._getTemplate(config.templateUrl || this.templateUrl);
   }
@@ -42,11 +50,15 @@ ArcaneView.prototype._render = function() {
   }
 }
 
+ArcaneView.prototype.context = function() {
+  return {};
+}
+
 ArcaneView.prototype._context = function() {
-  if (this.context) {
-    return this.context();
+  if (this.controller) {
+    return this.controller.getContext();
   } else {
-    return {person: "thomas"};
+    return this.context();
   }
 }
 
@@ -61,7 +73,7 @@ ArcaneView.prototype.one = function(event, target, callback) {
 }
 
 ArcaneView.prototype.addEvents = function(obj) {
-
+  return
 }
 
 ArcaneView.prototype.stopListening = function() {

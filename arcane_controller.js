@@ -49,12 +49,19 @@ ArcaneController.prototype._assignView = function(view) {
   this.view = view;
 }
 
-ArcaneController.prototype.context = function() {
+ArcaneController.prototype.getContext = function() {
+  this._context = this.generateContext();
+  return this._context;
+}
+
+ArcaneController.prototype.generateContext = function() {
   return {
     model: this.model,
-    collection: this.collection,
-  };
+    collection: this.collection
+  }
 }
+
+
 
 
 
