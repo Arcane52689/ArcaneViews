@@ -44,10 +44,12 @@ ArcaneView.prototype._assignTemplate = function(template) {
 
 
 ArcaneView.prototype._render = function() {
-  this.render && this.render();
-  if (typeof this.template === 'function'){
+  if (this.render) {
+    this.render();
+  } else if (typeof this.template === 'function'){
     this.$el.html(this.template(this._context()));
   }
+  return this;
 }
 
 ArcaneView.prototype.context = function() {
@@ -73,13 +75,26 @@ ArcaneView.prototype.one = function(event, target, callback) {
 }
 
 ArcaneView.prototype.addEvents = function(obj) {
-  return
+  for (key in obj) {
+    var callback;
+    if (obj.hasOwnProperty(key)) {
+      if (typeof obj[key] === 'function') {
+        callback = obj[key]
+      } else {
+        callback = this[obj[key]];
+      }
+      if (typeof callback !== "function") {
+        throw "Invalid Callback"
+      }
+      this.one(key.split(" ")[0], key.split(" ")[1], callback);
+    }
+  }
 }
 
 ArcaneView.prototype.stopListening = function() {
   for (key in this._listeningFor) {
     if (this._listeningFor.hasOwnProperty(key)) {
-      this.$el.stopListening(key);
+      this.$el.off(key);
     }
   }
 }
